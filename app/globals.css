@@ -12,10 +12,46 @@
   --accent: #2f3437;
   --accent-hover: #1f2326;
   --accent-soft: #f1f1ef;
+  --button-text: #ffffff;
   --focus: rgba(35, 131, 226, 0.16);
   --danger: #d44c47;
   --danger-soft: rgba(212, 76, 71, 0.1);
   --shadow: 0 1px 2px rgba(15, 23, 42, 0.05), 0 14px 30px rgba(15, 23, 42, 0.04);
+  --page-glow: rgba(255, 255, 255, 0.75);
+  --page-gradient: #fafaf9;
+  --placeholder: #9b9a97;
+  --empty-from: rgba(255, 255, 255, 0.66);
+  --empty-to: rgba(247, 246, 243, 0.92);
+  --loading-edge: rgba(255, 255, 255, 0.9);
+  --loading-center: rgba(241, 241, 239, 0.95);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #181a1b;
+  --bg-strong: #202223;
+  --surface: rgba(35, 37, 39, 0.92);
+  --surface-soft: #202223;
+  --surface-strong: #292b2d;
+  --border: #3b3e40;
+  --border-strong: #505457;
+  --text: #ecebe7;
+  --muted: #aaa9a4;
+  --accent: #e5e4df;
+  --accent-hover: #ffffff;
+  --accent-soft: #343638;
+  --button-text: #202223;
+  --focus: rgba(82, 156, 227, 0.28);
+  --danger: #ff8580;
+  --danger-soft: rgba(255, 133, 128, 0.12);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.24), 0 16px 36px rgba(0, 0, 0, 0.2);
+  --page-glow: rgba(75, 79, 82, 0.25);
+  --page-gradient: #202223;
+  --placeholder: #858681;
+  --empty-from: rgba(43, 45, 47, 0.75);
+  --empty-to: rgba(30, 32, 33, 0.9);
+  --loading-edge: rgba(46, 48, 50, 0.9);
+  --loading-center: rgba(60, 63, 65, 0.95);
 }
 
 * {
@@ -24,8 +60,9 @@
 
 html {
   background:
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.75), transparent 24%),
-    linear-gradient(180deg, #fafaf9 0%, var(--bg) 100%);
+    radial-gradient(circle at top left, var(--page-glow), transparent 24%),
+    linear-gradient(180deg, var(--page-gradient) 0%, var(--bg) 100%);
+  transition: background-color 0.2s ease;
 }
 
 body {
@@ -62,6 +99,10 @@ a {
 }
 
 .page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 1.5rem;
 }
 
@@ -70,6 +111,44 @@ a {
   font-size: clamp(2rem, 5vw, 2.8rem);
   line-height: 1.1;
   letter-spacing: -0.04em;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 42px;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.theme-toggle:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-strong);
+  transform: translateY(-1px);
+}
+
+.theme-toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--focus);
+}
+
+.theme-toggle svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .workspace-grid {
@@ -154,7 +233,7 @@ a {
 
 .text-input::placeholder,
 .text-area::placeholder {
-  color: #9b9a97;
+  color: var(--placeholder);
 }
 
 .primary-button {
@@ -177,7 +256,7 @@ a {
 
 .primary-button {
   background: var(--accent);
-  color: #fff;
+  color: var(--button-text);
 }
 
 .primary-button:hover {
@@ -207,7 +286,7 @@ a {
   border: 1px dashed var(--border-strong);
   border-radius: 16px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.66), rgba(247, 246, 243, 0.92));
+    linear-gradient(180deg, var(--empty-from), var(--empty-to));
 }
 
 .note-card,
@@ -286,9 +365,9 @@ a {
   background:
     linear-gradient(
       110deg,
-      rgba(255, 255, 255, 0.9) 8%,
-      rgba(241, 241, 239, 0.95) 18%,
-      rgba(255, 255, 255, 0.9) 33%
+      var(--loading-edge) 8%,
+      var(--loading-center) 18%,
+      var(--loading-edge) 33%
     );
   background-size: 200% 100%;
   animation: loading-shimmer 1.2s linear infinite;
@@ -329,6 +408,15 @@ a {
 
   .page-title {
     font-size: 2rem;
+  }
+
+  .theme-toggle span {
+    display: none;
+  }
+
+  .theme-toggle {
+    width: 42px;
+    padding: 0;
   }
 
   .note-title-row {

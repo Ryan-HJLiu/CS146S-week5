@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { ActionItemsPanel } from "@/components/action-items-panel";
 import { NotesPanel } from "@/components/notes-panel";
+import { ThemeToggle } from "@/components/theme-toggle";
 import {
   createActionItem,
   createNote,
@@ -143,6 +144,7 @@ export function HomeClient({ initialData }: HomeClientProps) {
     <main className="page-shell">
       <header className="page-header">
         <h1 className="page-title">CS146S Week5 作業</h1>
+        <ThemeToggle />
       </header>
 
       {errorMessage ? (
