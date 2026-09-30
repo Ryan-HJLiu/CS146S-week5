@@ -142,7 +142,7 @@ export function HomeClient({ initialData }: HomeClientProps) {
   return (
     <main className="page-shell">
       <header className="page-header">
-        <h1 className="page-title">CS146S Week5 作業</h1>
+        <h1 className="page-title">我的笔记和TODO</h1>
       </header>
 
       {errorMessage ? (

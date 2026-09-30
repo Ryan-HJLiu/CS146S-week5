@@ -29,7 +29,7 @@ describe("HomeClient", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: "CS146S Week5 作業",
+        name: "我的笔记和TODO",
       }),
     ).toBeInTheDocument();
     expect(screen.getByText("整理 Part 1")).toBeInTheDocument();

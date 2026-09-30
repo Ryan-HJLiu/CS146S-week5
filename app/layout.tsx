@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CS146S Week5 作業",
+  title: "我的笔记和TODO",
   description: "筆記與 todos。",
 };
 
