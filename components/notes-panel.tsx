@@ -10,14 +10,18 @@ type NotesPanelProps = {
   isLoading: boolean;
   notes: Note[];
   isSubmitting: boolean;
+  pendingIds: Set<string>;
   onCreate: (input: { title: string; content: string }) => Promise<void>;
+  onDelete: (id: string) => Promise<void>;
 };
 
 export function NotesPanel({
   isLoading,
   notes,
   isSubmitting,
+  pendingIds,
   onCreate,
+  onDelete,
 }: NotesPanelProps) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -91,20 +95,39 @@ export function NotesPanel({
         <div className="list-empty" aria-hidden="true" />
       ) : (
         <ul className="list">
-          {notes.map((note) => (
-            <li key={note.id} className="note-card">
-              <div className="note-title-row">
-                <h3 className="note-title">{note.title}</h3>
-                <span
-                  className="note-time"
-                  title={formatAbsoluteDate(note.createdAt)}
-                >
-                  {formatDisplayDate(note.createdAt)}
-                </span>
-              </div>
-              <p className="note-content">{note.content}</p>
-            </li>
-          ))}
+          {notes.map((note) => {
+            const isPending = pendingIds.has(note.id);
+
+            return (
+              <li key={note.id} className="note-card" data-pending={isPending}>
+                <div className="note-title-row">
+                  <h3 className="note-title">{note.title}</h3>
+                  <div className="note-meta">
+                    <span
+                      className="note-time"
+                      title={formatAbsoluteDate(note.createdAt)}
+                    >
+                      {formatDisplayDate(note.createdAt)}
+                    </span>
+                    <button
+                      aria-label={`刪除筆記：${note.title}`}
+                      className="delete-note-button"
+                      type="button"
+                      disabled={isPending}
+                      onClick={() => {
+                        if (window.confirm(`確定要刪除「${note.title}」嗎？`)) {
+                          void onDelete(note.id);
+                        }
+                      }}
+                    >
+                      {isPending ? "刪除中" : "刪除"}
+                    </button>
+                  </div>
+                </div>
+                <p className="note-content">{note.content}</p>
+              </li>
+            );
+          })}
         </ul>
       )}
     </section>

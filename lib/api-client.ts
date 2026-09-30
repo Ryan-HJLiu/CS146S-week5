@@ -41,6 +41,12 @@ export function createNote(input: CreateNoteInput): Promise<Note> {
   });
 }
 
+export function deleteNote(id: string): Promise<Note> {
+  return requestJson<Note>(`/api/notes/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+  });
+}
+
 export function listActionItems(): Promise<ActionItem[]> {
   return requestJson<ActionItem[]>("/api/action-items");
 }

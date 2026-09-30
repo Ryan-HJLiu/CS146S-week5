@@ -14,6 +14,7 @@ vi.mock("@/lib/api-client", async () => {
   return {
     ...actual,
     createNote: vi.fn(),
+    deleteNote: vi.fn(),
     createActionItem: vi.fn(),
     listNotes: vi.fn(),
     listActionItems: vi.fn(),
@@ -31,6 +32,7 @@ describe("HomeClient interactions", () => {
     vi.mocked(apiClient.listNotes).mockImplementation(fake.listNotes);
     vi.mocked(apiClient.listActionItems).mockImplementation(fake.listActionItems);
     vi.mocked(apiClient.createNote).mockImplementation(fake.createNote);
+    vi.mocked(apiClient.deleteNote).mockImplementation(fake.deleteNote);
     vi.mocked(apiClient.createActionItem).mockImplementation(fake.createActionItem);
     vi.mocked(apiClient.updateActionItem).mockImplementation(fake.updateActionItem);
 
@@ -125,6 +127,50 @@ describe("HomeClient interactions", () => {
     });
 
     expect(screen.getByText("整理 writeup")).toBeInTheDocument();
+  });
+
+  it("deletes a note after confirmation and reloads the list", async () => {
+    const user = userEvent.setup();
+    const deleteNoteMock = vi.mocked(apiClient.deleteNote);
+    const confirmMock = vi.spyOn(window, "confirm").mockReturnValue(true);
+    installApiFake({
+      notes: [
+        {
+          id: "note-1",
+          title: "可以刪除的筆記",
+          content: "刪除後不應留在畫面上。",
+          createdAt: "2026-03-30T08:00:00.000Z",
+        },
+      ],
+    });
+
+    render(
+      <HomeClient
+        initialData={{
+          notes: [
+            {
+              id: "note-1",
+              title: "可以刪除的筆記",
+              content: "刪除後不應留在畫面上。",
+              createdAt: "2026-03-30T08:00:00.000Z",
+            },
+          ],
+          actionItems: [],
+        }}
+      />,
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: "刪除筆記：可以刪除的筆記" }),
+    );
+
+    expect(confirmMock).toHaveBeenCalledWith("確定要刪除「可以刪除的筆記」嗎？");
+    await waitFor(() => {
+      expect(deleteNoteMock).toHaveBeenCalledWith("note-1");
+      expect(screen.queryByText("可以刪除的筆記")).not.toBeInTheDocument();
+    });
+
+    confirmMock.mockRestore();
   });
 
   it("reloads and reorders action items after toggling a checkbox", async () => {

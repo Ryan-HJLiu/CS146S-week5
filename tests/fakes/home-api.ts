@@ -28,6 +28,7 @@ export function createHomeApiFake(
   listNotes: () => Promise<Note[]>;
   listActionItems: () => Promise<ActionItem[]>;
   createNote: (input: { title: string; content: string }) => Promise<Note>;
+  deleteNote: (id: string) => Promise<Note>;
   createActionItem: (input: { description: string }) => Promise<ActionItem>;
   updateActionItem: (
     id: string,
@@ -66,6 +67,18 @@ export function createHomeApiFake(
       state.notes = sortNotes([note, ...state.notes]);
 
       return { ...note };
+    },
+
+    async deleteNote(id) {
+      const target = state.notes.find((note) => note.id === id);
+
+      if (!target) {
+        throw new Error("找不到這筆筆記。");
+      }
+
+      state.notes = state.notes.filter((note) => note.id !== id);
+
+      return { ...target };
     },
 
     async createActionItem(input) {

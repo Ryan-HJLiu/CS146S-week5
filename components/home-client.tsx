@@ -8,6 +8,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import {
   createActionItem,
   createNote,
+  deleteNote,
   listActionItems,
   listNotes,
   updateActionItem,
@@ -35,6 +36,9 @@ export function HomeClient({ initialData }: HomeClientProps) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isBooting, setIsBooting] = useState(!initialData);
   const [isSubmittingNote, setIsSubmittingNote] = useState(false);
+  const [pendingNoteIds, setPendingNoteIds] = useState<Set<string>>(
+    () => new Set(),
+  );
   const [isSubmittingActionItem, setIsSubmittingActionItem] = useState(false);
   const [pendingActionItemIds, setPendingActionItemIds] = useState<Set<string>>(
     () => new Set(),
@@ -120,6 +124,26 @@ export function HomeClient({ initialData }: HomeClientProps) {
     }
   }
 
+  async function handleDeleteNote(id: string) {
+    setPendingNoteIds((current) => new Set(current).add(id));
+    setErrorMessage(null);
+
+    try {
+      await deleteNote(id);
+      await refreshData();
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "刪除筆記失敗，請稍後再試。",
+      );
+    } finally {
+      setPendingNoteIds((current) => {
+        const next = new Set(current);
+        next.delete(id);
+        return next;
+      });
+    }
+  }
+
   async function handleToggleActionItem(id: string, completed: boolean) {
     setPendingActionItemIds((current) => new Set(current).add(id));
     setErrorMessage(null);
@@ -158,7 +182,9 @@ export function HomeClient({ initialData }: HomeClientProps) {
           isLoading={isBooting}
           notes={notes}
           isSubmitting={isSubmittingNote}
+          pendingIds={pendingNoteIds}
           onCreate={handleCreateNote}
+          onDelete={handleDeleteNote}
         />
 
         <ActionItemsPanel
