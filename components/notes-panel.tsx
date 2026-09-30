@@ -1,5 +1,9 @@
 import { useState } from "react";
 
+import {
+  formatAbsoluteDate,
+  formatDisplayDate,
+} from "@/lib/format-display-date";
 import type { Note } from "@/lib/types";
 
 type NotesPanelProps = {
@@ -8,14 +12,6 @@ type NotesPanelProps = {
   isSubmitting: boolean;
   onCreate: (input: { title: string; content: string }) => Promise<void>;
 };
-
-const dateFormatter = new Intl.DateTimeFormat("zh-TW", {
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-  hour: "2-digit",
-  minute: "2-digit",
-});
 
 export function NotesPanel({
   isLoading,
@@ -99,8 +95,11 @@ export function NotesPanel({
             <li key={note.id} className="note-card">
               <div className="note-title-row">
                 <h3 className="note-title">{note.title}</h3>
-                <span className="note-time">
-                  {dateFormatter.format(new Date(note.createdAt))}
+                <span
+                  className="note-time"
+                  title={formatAbsoluteDate(note.createdAt)}
+                >
+                  {formatDisplayDate(note.createdAt)}
                 </span>
               </div>
               <p className="note-content">{note.content}</p>
