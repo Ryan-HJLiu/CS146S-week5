@@ -39,6 +39,30 @@ describe("HomeClient interactions", () => {
 
   beforeEach(() => {
     vi.resetAllMocks();
+    document.documentElement.dataset.theme = "light";
+    localStorage.clear();
+  });
+
+  it("toggles and remembers the color theme", async () => {
+    const user = userEvent.setup();
+    installApiFake();
+
+    render(
+      <HomeClient
+        initialData={{
+          notes: [],
+          actionItems: [],
+        }}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "切換為深色模式" }));
+
+    expect(document.documentElement).toHaveAttribute("data-theme", "dark");
+    expect(localStorage.getItem("theme")).toBe("dark");
+    expect(
+      screen.getByRole("button", { name: "切換為淺色模式" }),
+    ).toBeInTheDocument();
   });
 
   it("creates a note with the in-memory API fake and reloads the list", async () => {
