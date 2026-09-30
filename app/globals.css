@@ -299,6 +299,10 @@ a {
   background: var(--surface-strong);
 }
 
+.note-card[data-pending="true"] {
+  opacity: 0.72;
+}
+
 .note-title-row {
   display: flex;
   align-items: flex-start;
@@ -316,6 +320,37 @@ a {
   color: var(--muted);
   font-size: 0.84rem;
   white-space: nowrap;
+}
+
+.note-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.delete-note-button {
+  padding: 0.15rem 0.45rem;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  color: var(--danger);
+  background: transparent;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.delete-note-button:not(:disabled):hover {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.delete-note-button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--focus);
+}
+
+.delete-note-button:disabled {
+  cursor: default;
+  opacity: 0.68;
 }
 
 .note-content {
